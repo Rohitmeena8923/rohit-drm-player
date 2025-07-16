@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.6/shaka-player.compiled.js"></script>
+</head>
+<body>
+  <video id="video" width="100%" height="auto" controls autoplay></video>
+  <script>
+    async function initApp() {
+      shaka.polyfill.installAll();
+      const player = new shaka.Player(document.getElementById('video'));
+      player.configure({
+        drm: {
+          "com.widevine.alpha": {
+            "licenseServerUri": "https://drm.classplus.co/license",
+            "httpRequestHeaders": {
+              "authorization": "Bearer {{ token }}"
+            }
+          }
+        }
+      });
+      try {
+        await player.load("{{ m3u8 }}");
+      } catch (e) {
+        console.error('Error loading video', e);
+      }
+    }
+    initApp();
+  </script>
+</body>
+</html>
